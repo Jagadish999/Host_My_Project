@@ -1,0 +1,33 @@
+CREATE TABLE users (
+    UserId SERIAL PRIMARY KEY,
+    UserName VARCHAR(50) UNIQUE NOT NULL,
+    Password VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    Created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+INSERT INTO users (UserName, Password, Email, FirstName, LastName)
+VALUES ('jagadish', 'password123', 'jagadish@gmail.com', 'jagadish', 'parajuli');
+
+
+CREATE OR REPLACE FUNCTION FnGetUserSel(input_userName VARCHAR, input_password VARCHAR)
+RETURNS TABLE (
+    UserId INT,
+    UserName VARCHAR,
+    Email VARCHAR,
+    FirstName VARCHAR,
+    LastName VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT users.UserId, users.UserName, users.Email, users.FirstName, users.LastName
+    FROM users
+    WHERE users.UserName = input_userName
+      AND users.Password = input_password;
+END;
+$$ LANGUAGE plpgsql;
